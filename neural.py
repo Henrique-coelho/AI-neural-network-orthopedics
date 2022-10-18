@@ -1,9 +1,6 @@
-import dataclasses
 from platform import java_ver
 from random import randint
-import time
 import numpy as np
-import pandas as pd
 import math
 from typing import Dict, List, Tuple
 import matplotlib.pyplot as plt
@@ -72,14 +69,14 @@ class NeuralNetwork():
     def translateSigmoid(self, x):
         return np.array([1 if i==np.argmax(x, axis=0) else 0 for i in range(len(x))])
          
-    def degree(self, x):
+    def step(self, x):
         #computing derivative to the Sigmoid function
         return np.array([1 if i>=0 else 0 for i in x])
 
     def train(self, max_it, alpha, X, d, function):
         # Pesos Sorteados
-        w = np.random.randint(-5,5,(d[0].size,X[0].size))
-        b = np.random.randint(-5,5,(d[0].size))
+        w = np.random.randint(-1,1,(d[0].size,X[0].size))
+        b = np.random.randint(-1,1,(d[0].size))
         
         t = 1
         E = 1
@@ -115,35 +112,19 @@ if __name__ == "__main__":
     #initializing the neuron class
     neural_network = NeuralNetwork()
 
-    print("Beginning Randomly Generated Weights: ")
-    #print(neural_network.synaptic_weights)
-    list1 = ['a','b','c','d','e','f','g','h', 'i', 'j', 'k', 'l']
-    print(list1[:5])
-    print(list1[-7:])
-
     #training data consisting of 4 examples--3 input values and 1 output
     subject = TestSubject("column_3C.dat",{"DH":[0,0,1],"SL":[0,1,0],"NO":[1,0,0]})
-    #print(datContent)
-    training_inputs = np.array([[0,1,0,0],[0,0,1,1]])
-
-    training_outputs = np.array([[0,0],[1,0],[1,0],[1,1]])
 
     #training taking place
     X,d,Xt,dt = subject.drawSamples(0.7)
-    #print(X,Xt)
     w,b,err_epoch = neural_network.train(alpha=0.1, max_it=100, X=X, d=d, function=neural_network.sigmoid)
-
-    print("Ending Weights After Training: ")
-    #print(w)
-    #print(b)
     plt.plot(err_epoch)
     plt.ylabel('Erro do treino')
     plt.show()
 
     y_found = neural_network.test(w,b,Xt,dt, function=neural_network.sigmoid)
     acc = sum(y_found)/len(y_found)
-    #print(test_err)
 
-    print(acc)
+    print(f"Acurácia: {acc}")
     
     
